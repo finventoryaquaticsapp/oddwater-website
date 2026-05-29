@@ -1,213 +1,25 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
-  Bug,
   Calculator,
   Droplets,
-  Egg,
   Fish,
-  FlaskConical,
-  HeartPulse,
+  Flame,
   Leaf,
-  Mail,
-  ShieldCheck,
-  Sparkles,
-  ThermometerSnowflake,
-  Wand2,
+  Ruler,
+  Thermometer,
   Waves,
 } from "lucide-react";
 import "./index.css";
 
-const calculatorCards = [
-  "Tank Volume",
-  "Substrate Depth",
-  "Water Weight",
-  "Water Change",
-  "Heater Size",
-  "PVC Tunnel Planner",
-];
-
-const guideCards = [
-  {
-    title: "Tank Cycling Guides",
-    description:
-      "Fishless cycling, beginner cycling, shrimp cycling, axolotl cycling, water testing, and safe livestock timing.",
-    icon: FlaskConical,
-  },
-  {
-    title: "Pest & Planaria Guides",
-    description:
-      "Planaria, hydra, detritus worms, algae outbreaks, bacterial blooms, and shrimp-safe treatment notes.",
-    icon: Bug,
-  },
-  {
-    title: "Axolotl Care Tools",
-    description:
-      "Cold-water alerts, feeding schedules, morph profiles, fungus tracking, floating logs, and healing photo journals.",
-    icon: HeartPulse,
-  },
-  {
-    title: "Aquascape Planning",
-    description:
-      "Plan hides, PVC tunnels, driftwood, plants, caves, substrate slopes, and territory zones for oddball setups.",
-    icon: Leaf,
-  },
-];
-
-const creatures = ["Axolotls", "Fire Eels", "Shrimp", "Puffers", "Planted Tanks", "Oddball Fish"];
-
-function Header() {
-  return (
-    <header className="fixed left-0 right-0 top-0 z-50 w-full border-b border-cyan-300/10 bg-slate-950/90 backdrop-blur-xl">
-      <div className="mx-auto flex w-full justify-center px-4 py-2">
-        <a href="#home" className="flex flex-col items-center justify-center text-center">
-          <img
-            src="/oddwater-logo.png"
-            alt="Oddwater logo"
-            className="block h-auto max-h-[72px] w-auto max-w-[190px] object-contain drop-shadow-[0_0_18px_rgba(34,211,238,.75)]"
-          />
-          <h1 className="mt-1 text-xl font-black leading-none text-cyan-300 neon-text">
-            Oddwater
-          </h1>
-        </a>
-      </div>
-    </header>
-  );
+function Card({ children, className = "" }) {
+  return <div className={`glass-card rounded-[2rem] p-6 ${className}`}>{children}</div>;
 }
 
-function BubbleField() {
-  const bubbles = Array.from({ length: 18 }, (_, i) => ({
-    left: `${(i * 17) % 100}%`,
-    size: `${8 + (i % 5) * 7}px`,
-    duration: `${9 + (i % 6) * 2}s`,
-    delay: `${(i % 9) * -1.3}s`,
-  }));
-
+function NumberField({ label, value, setValue }) {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {bubbles.map((bubble, index) => (
-        <span
-          key={index}
-          className="bubble"
-          style={{
-            left: bubble.left,
-            width: bubble.size,
-            height: bubble.size,
-            animationDuration: bubble.duration,
-            animationDelay: bubble.delay,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-function MiniAppCard({ icon: Icon, title, text }) {
-  return (
-    <div className="rounded-3xl border border-cyan-300/15 bg-cyan-300/5 p-4">
-      <Icon className="h-7 w-7 text-cyan-300" />
-      <p className="mt-3 font-bold text-white">{title}</p>
-      <p className="text-xs text-slate-300">{text}</p>
-    </div>
-  );
-}
-
-function AppPreview() {
-  return (
-    <div className="relative mx-auto w-full max-w-sm">
-      <div className="absolute inset-8 rounded-full bg-cyan-300/20 blur-3xl" />
-      <div className="floaty relative rounded-[2.5rem] border border-cyan-300/25 bg-black p-3 shadow-[0_0_70px_rgba(34,211,238,.25)]">
-        <div className="overflow-hidden rounded-[2rem] bg-[#03111f]">
-          <div className="relative min-h-[560px] bg-[radial-gradient(circle_at_top,#155e75,#020617_45%,#000)] p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-cyan-100">Welcome back</p>
-                <h3 className="text-3xl font-black text-cyan-300 neon-text">Oddwater</h3>
-              </div>
-              <Wand2 className="h-8 w-8 text-cyan-200 drop-shadow-[0_0_10px_rgba(34,211,238,.9)]" />
-            </div>
-
-            <div className="mt-8 rounded-3xl border border-cyan-300/20 bg-black/35 p-5 shadow-aqua backdrop-blur">
-              <p className="text-sm text-cyan-100">Main Tank</p>
-              <h4 className="mt-1 text-2xl font-black text-white">Fire Eel Sanctuary</h4>
-              <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs text-cyan-50">
-                <span className="rounded-2xl bg-cyan-300/10 p-3">125 gal</span>
-                <span className="rounded-2xl bg-cyan-300/10 p-3">78°F</span>
-                <span className="rounded-2xl bg-cyan-300/10 p-3">pH 7.2</span>
-              </div>
-              <div className="mt-5 h-3 rounded-full bg-cyan-950">
-                <div className="h-3 w-[92%] rounded-full bg-cyan-300 shadow-[0_0_14px_rgba(34,211,238,.9)]" />
-              </div>
-              <div className="mt-3 flex justify-between text-xs">
-                <span className="text-lime-300">All Systems Normal</span>
-                <span className="text-cyan-100">Health 92%</span>
-              </div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <MiniAppCard icon={Calculator} title="Calculators" text="Volume + substrate" />
-              <MiniAppCard icon={Bug} title="Pest Guides" text="Planaria + hydra" />
-              <MiniAppCard icon={ThermometerSnowflake} title="Axolotls" text="Cold-water alerts" />
-              <MiniAppCard icon={Waves} title="Cycling" text="Track your cycle" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Hero() {
-  return (
-    <section id="home" className="relative min-h-screen overflow-hidden px-5 pt-40">
-      <BubbleField />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(34,211,238,.22),transparent_28%),radial-gradient(circle_at_80%_30%,rgba(168,85,247,.16),transparent_30%)]" />
-      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 py-14 lg:grid-cols-2">
-        <div>
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-sm font-semibold text-cyan-100 shadow-aqua">
-            <Sparkles className="h-4 w-4" />
-            Neon aquatic care is coming
-          </div>
-
-          <h2 className="max-w-4xl text-5xl font-black leading-[0.98] tracking-tight text-white sm:text-7xl">
-            <span className="text-cyan-300 neon-text">Track every tank.</span>
-            <br />
-            Care for every creature.
-          </h2>
-
-          <p className="mt-7 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl">
-            Oddwater is an aquatic ecosystem app and website for aquariums, axolotls,
-            shrimp, eels, puffers, oddball fish, planted tanks, cycling guides, pest
-            problems, and glowing habitat planning.
-          </p>
-
-          <div className="mt-9 flex flex-wrap gap-4">
-            <a href="#beta" className="rounded-2xl bg-cyan-300 px-8 py-4 text-lg font-black text-slate-950 shadow-[0_0_35px_rgba(34,211,238,.6)] transition hover:scale-105">
-              Join Beta
-            </a>
-            <a href="#calculators" className="rounded-2xl border border-cyan-300/35 bg-cyan-300/10 px-8 py-4 text-lg font-black text-cyan-100 transition hover:bg-cyan-300/20">
-              Explore Tools
-            </a>
-          </div>
-
-          <div className="mt-8 flex flex-wrap gap-3 text-sm font-semibold text-cyan-100">
-            <span>✓ Tank calculators</span>
-            <span>✓ Cycling help</span>
-            <span>✓ Planaria guides</span>
-            <span>✓ Axolotl support</span>
-          </div>
-        </div>
-
-        <AppPreview />
-      </div>
-    </section>
-  );
-}
-
-function NumberInput({ label, value, setValue }) {
-  return (
-    <label className="block">
-      <span className="text-sm font-semibold text-cyan-100">{label}</span>
+    <label>
+      <span className="text-sm font-bold text-cyan-100">{label}</span>
       <input
         type="number"
         value={value}
@@ -218,168 +30,346 @@ function NumberInput({ label, value, setValue }) {
   );
 }
 
-function ResultCard({ label, value }) {
+function ResultBox({ label, value }) {
   return (
-    <div className="rounded-3xl border border-cyan-300/15 bg-black/35 p-6 text-center">
-      <p className="text-4xl font-black text-cyan-300 neon-text">{value}</p>
-      <p className="mt-2 text-sm font-bold text-cyan-100">{label}</p>
+    <div className="rounded-2xl bg-cyan-300/10 p-4 text-center">
+      <p className="text-2xl font-black text-cyan-200 neon-text">{value}</p>
+      <p className="text-xs font-bold text-cyan-100">{label}</p>
     </div>
   );
 }
 
-function LiveCalculator() {
-  const [length, setLength] = useState(48);
-  const [width, setWidth] = useState(18);
-  const [height, setHeight] = useState(21);
-  const [depth, setDepth] = useState(2);
-
-  const gallons = useMemo(() => ((length * width * height) / 231).toFixed(1), [length, width, height]);
-  const waterWeight = useMemo(() => (Number(gallons) * 8.34).toFixed(0), [gallons]);
-  const substrate = useMemo(() => (((length * width * depth) / 1728) * 100).toFixed(0), [length, width, depth]);
-
+function Header() {
   return (
-    <div className="mt-12 rounded-[2rem] border border-cyan-300/15 bg-cyan-300/5 p-6 shadow-aqua">
-      <div className="grid gap-8 lg:grid-cols-2">
-        <div>
-          <p className="text-sm font-black uppercase tracking-[0.28em] text-cyan-200">Working Demo</p>
-          <h3 className="mt-3 text-3xl font-black text-white">Tank Size + Substrate Calculator</h3>
-          <p className="mt-4 text-slate-300">Enter tank dimensions and substrate depth to estimate gallons, water weight, and substrate pounds.</p>
+    <header className="fixed left-0 right-0 top-0 z-50 border-b border-cyan-300/10 bg-slate-950/90 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3">
+        <a href="#home" className="flex items-center gap-3">
+          <img
+            src="/oddwater-logo.png"
+            alt="Oddwater logo"
+            className="h-16 w-16 object-contain drop-shadow-[0_0_18px_rgba(34,211,238,.75)]"
+          />
+          <div>
+            <h1 className="text-2xl font-black text-cyan-300 neon-text">Oddwater</h1>
+            <p className="text-xs font-semibold text-cyan-100">Aquatic ecosystem tools</p>
+          </div>
+        </a>
 
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            <NumberInput label="Length inches" value={length} setValue={setLength} />
-            <NumberInput label="Width inches" value={width} setValue={setWidth} />
-            <NumberInput label="Height inches" value={height} setValue={setHeight} />
-            <NumberInput label="Substrate depth" value={depth} setValue={setDepth} />
+        <nav className="hidden gap-5 text-sm font-bold text-cyan-100 sm:flex">
+          <a href="#calculators">Calculators</a>
+          <a href="#guides">Guides</a>
+          <a href="#beta">Beta</a>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+function Hero() {
+  return (
+    <section id="home" className="relative min-h-screen overflow-hidden px-5 pt-36">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(34,211,238,.22),transparent_30%),radial-gradient(circle_at_80%_20%,rgba(168,85,247,.18),transparent_28%)]" />
+      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 py-16 lg:grid-cols-2">
+        <div>
+          <div className="mb-6 inline-flex rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-sm font-bold text-cyan-100">
+            Neon aquarium care tools
+          </div>
+
+          <h2 className="text-5xl font-black leading-tight text-white sm:text-7xl">
+            <span className="text-cyan-300 neon-text">Oddwater</span>
+            <br />
+            Track every tank.
+          </h2>
+
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+            Aquarium calculators, cycling help, pest and planaria guides, axolotl support,
+            and oddball tank planning for real aquatic keepers.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-4">
+            <a href="#calculators" className="rounded-2xl bg-cyan-300 px-7 py-4 font-black text-slate-950 shadow-aqua">
+              Use Calculators
+            </a>
+            <a href="#beta" className="rounded-2xl border border-cyan-300/30 bg-cyan-300/10 px-7 py-4 font-black text-cyan-100">
+              Join Beta
+            </a>
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
-          <ResultCard label="Gallons" value={gallons} />
-          <ResultCard label="Water Weight lbs" value={waterWeight} />
-          <ResultCard label="Substrate lbs" value={substrate} />
-        </div>
+        <Card>
+          <div className="text-center">
+            <img
+              src="/oddwater-logo.png"
+              alt="Oddwater logo"
+              className="mx-auto h-52 w-52 object-contain drop-shadow-[0_0_30px_rgba(34,211,238,.75)]"
+            />
+            <h3 className="mt-4 text-3xl font-black text-cyan-300 neon-text">
+              Aquatic care, but magical.
+            </h3>
+            <p className="mt-3 text-slate-300">
+              Built for planted tanks, shrimp, axolotls, fire eels, puffers, and oddballs.
+            </p>
+          </div>
+        </Card>
       </div>
-    </div>
+    </section>
   );
 }
 
 function CalculatorHub() {
+  const [active, setActive] = useState("tank");
+
+  const tabs = [
+    ["tank", "Tank Size"],
+    ["water", "Water Change"],
+    ["heater", "Heater"],
+    ["pvc", "PVC Tunnel"],
+    ["stocking", "Stocking"],
+  ];
+
   return (
-    <section id="calculators" className="relative px-5 py-24">
+    <section id="calculators" className="px-5 py-24">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-12 text-center">
-          <p className="text-sm font-black uppercase tracking-[0.35em] text-cyan-200">Free Tools</p>
-          <h2 className="mt-3 text-4xl font-black text-white sm:text-6xl">Aquarium calculators that do the hard math for you.</h2>
-          <p className="mx-auto mt-5 max-w-3xl text-lg text-slate-300">Plan tanks, substrate, water weight, water changes, heater sizing, and PVC tunnel layouts without guessing.</p>
+        <div className="mb-10 text-center">
+          <p className="text-sm font-black uppercase tracking-[0.35em] text-cyan-200">
+            Working Calculators
+          </p>
+          <h2 className="mt-3 text-4xl font-black text-white sm:text-6xl">
+            Aquarium math made easy.
+          </h2>
+          <p className="mx-auto mt-5 max-w-3xl text-lg text-slate-300">
+            These calculators are live and update instantly.
+          </p>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {calculatorCards.map((item) => (
-            <div key={item} className="glass-card rounded-3xl p-7 transition hover:-translate-y-1 hover:border-cyan-300/35">
-              <Calculator className="h-10 w-10 text-cyan-300 drop-shadow-[0_0_10px_rgba(34,211,238,.8)]" />
-              <h3 className="mt-5 text-2xl font-black text-cyan-100">{item}</h3>
-              <p className="mt-3 text-slate-300">A fast, visual, mobile-friendly calculator for aquarium planning and setup decisions.</p>
-            </div>
-          ))}
-        </div>
+        <Card className="mb-6">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+            {tabs.map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => setActive(key)}
+                className={`rounded-2xl px-4 py-3 font-black ${
+                  active === key
+                    ? "bg-cyan-300 text-slate-950"
+                    : "bg-cyan-300/10 text-cyan-100 hover:bg-cyan-300/20"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </Card>
 
-        <LiveCalculator />
+        {active === "tank" && <TankCalculator />}
+        {active === "water" && <WaterChangeCalculator />}
+        {active === "heater" && <HeaterCalculator />}
+        {active === "pvc" && <PvcCalculator />}
+        {active === "stocking" && <StockingCalculator />}
       </div>
     </section>
+  );
+}
+
+function TankCalculator() {
+  const [length, setLength] = useState(72);
+  const [width, setWidth] = useState(18);
+  const [height, setHeight] = useState(22);
+  const [depth, setDepth] = useState(3);
+
+  const gallons = ((length * width * height) / 231).toFixed(1);
+  const waterWeight = (Number(gallons) * 8.34).toFixed(0);
+  const substrate = (((length * width * depth) / 1728) * 100).toFixed(0);
+
+  return (
+    <Card>
+      <div className="mb-6 flex items-center gap-3">
+        <Ruler className="h-9 w-9 text-cyan-300" />
+        <div>
+          <h3 className="text-3xl font-black text-white">Tank Size + Substrate</h3>
+          <p className="text-slate-300">Estimate gallons, water weight, and substrate pounds.</p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <NumberField label="Length in" value={length} setValue={setLength} />
+        <NumberField label="Width in" value={width} setValue={setWidth} />
+        <NumberField label="Height in" value={height} setValue={setHeight} />
+        <NumberField label="Substrate depth in" value={depth} setValue={setDepth} />
+      </div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <ResultBox label="Gallons" value={gallons} />
+        <ResultBox label="Water Weight lbs" value={waterWeight} />
+        <ResultBox label="Substrate lbs" value={substrate} />
+      </div>
+    </Card>
+  );
+}
+
+function WaterChangeCalculator() {
+  const [gallons, setGallons] = useState(40);
+  const [currentNitrate, setCurrentNitrate] = useState(40);
+  const [targetNitrate, setTargetNitrate] = useState(20);
+
+  const percent =
+    currentNitrate <= 0
+      ? 0
+      : Math.max(0, Math.min(100, (1 - targetNitrate / currentNitrate) * 100)).toFixed(0);
+
+  const gallonsOut = ((gallons * percent) / 100).toFixed(1);
+
+  return (
+    <Card>
+      <div className="mb-6 flex items-center gap-3">
+        <Droplets className="h-9 w-9 text-cyan-300" />
+        <div>
+          <h3 className="text-3xl font-black text-white">Water Change Calculator</h3>
+          <p className="text-slate-300">Estimate water change needed to reduce nitrate.</p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        <NumberField label="Tank gallons" value={gallons} setValue={setGallons} />
+        <NumberField label="Current nitrate ppm" value={currentNitrate} setValue={setCurrentNitrate} />
+        <NumberField label="Target nitrate ppm" value={targetNitrate} setValue={setTargetNitrate} />
+      </div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <ResultBox label="Water Change %" value={`${percent}%`} />
+        <ResultBox label="Gallons to Change" value={gallonsOut} />
+      </div>
+    </Card>
+  );
+}
+
+function HeaterCalculator() {
+  const [gallons, setGallons] = useState(40);
+  const [roomTemp, setRoomTemp] = useState(68);
+  const [targetTemp, setTargetTemp] = useState(78);
+
+  const tempRise = Math.max(0, targetTemp - roomTemp);
+  const watts = Math.ceil(gallons * tempRise * 3);
+
+  return (
+    <Card>
+      <div className="mb-6 flex items-center gap-3">
+        <Thermometer className="h-9 w-9 text-cyan-300" />
+        <div>
+          <h3 className="text-3xl font-black text-white">Heater Size Helper</h3>
+          <p className="text-slate-300">Rough wattage estimate. Always verify heater safety.</p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        <NumberField label="Tank gallons" value={gallons} setValue={setGallons} />
+        <NumberField label="Room temp °F" value={roomTemp} setValue={setRoomTemp} />
+        <NumberField label="Target temp °F" value={targetTemp} setValue={setTargetTemp} />
+      </div>
+
+      <div className="mt-6">
+        <ResultBox label="Estimated watts" value={watts} />
+      </div>
+    </Card>
+  );
+}
+
+function PvcCalculator() {
+  const [pipeLength, setPipeLength] = useState(48);
+  const [runs, setRuns] = useState(2);
+  const [diameter, setDiameter] = useState(3);
+  const [elbows, setElbows] = useState(4);
+
+  const totalPipe = pipeLength * runs;
+
+  return (
+    <Card>
+      <div className="mb-6 flex items-center gap-3">
+        <Waves className="h-9 w-9 text-cyan-300" />
+        <div>
+          <h3 className="text-3xl font-black text-white">PVC Tunnel Planner</h3>
+          <p className="text-slate-300">Plan eel and oddball hiding tunnel layouts.</p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <NumberField label="Pipe length per run in" value={pipeLength} setValue={setPipeLength} />
+        <NumberField label="Number of runs" value={runs} setValue={setRuns} />
+        <NumberField label="Pipe diameter in" value={diameter} setValue={setDiameter} />
+        <NumberField label="Elbows/fittings" value={elbows} setValue={setElbows} />
+      </div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <ResultBox label="Total Pipe Inches" value={totalPipe} />
+        <ResultBox label="Pipe Diameter" value={`${diameter} in`} />
+        <ResultBox label="Fittings" value={elbows} />
+      </div>
+
+      <p className="mt-5 rounded-2xl bg-cyan-300/10 p-4 text-sm font-semibold text-cyan-100">
+        Tip: sand all cut edges smooth, leave multiple exits, and avoid trapping fish.
+      </p>
+    </Card>
+  );
+}
+
+function StockingCalculator() {
+  const [gallons, setGallons] = useState(40);
+  const [smallFish, setSmallFish] = useState(8);
+  const [heavyFish, setHeavyFish] = useState(2);
+
+  const score = Math.max(
+    0,
+    Math.min(100, 100 - ((smallFish * 3 + heavyFish * 10) / (gallons || 1)) * 20)
+  ).toFixed(0);
+
+  const status =
+    score > 75 ? "Light/Moderate" : score > 45 ? "Watch bioload" : "High bioload risk";
+
+  return (
+    <Card>
+      <div className="mb-6 flex items-center gap-3">
+        <Fish className="h-9 w-9 text-cyan-300" />
+        <div>
+          <h3 className="text-3xl font-black text-white">Simple Stocking Estimator</h3>
+          <p className="text-slate-300">A rough bioload helper, not species compatibility advice.</p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        <NumberField label="Tank gallons" value={gallons} setValue={setGallons} />
+        <NumberField label="Small fish count" value={smallFish} setValue={setSmallFish} />
+        <NumberField label="Heavy bioload fish" value={heavyFish} setValue={setHeavyFish} />
+      </div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <ResultBox label="Stocking Score" value={`${score}%`} />
+        <ResultBox label="Status" value={status} />
+      </div>
+    </Card>
   );
 }
 
 function Guides() {
+  const items = [
+    ["Cycling Guides", "Fishless cycling, ammonia, nitrite, nitrate, and safe livestock timing.", Leaf],
+    ["Pest Guides", "Planaria, hydra, detritus worms, shrimp-safe warnings, and prevention.", Fish],
+    ["Axolotl Support", "Cold-water care, temperature alerts, feeding notes, and health tracking ideas.", Flame],
+  ];
+
   return (
-    <section id="guides" className="relative px-5 py-24">
+    <section id="guides" className="px-5 py-24">
       <div className="mx-auto max-w-7xl">
-        <div className="rounded-[2.5rem] border border-cyan-300/10 bg-cyan-300/5 p-6 shadow-aqua sm:p-10">
-          <div className="mb-10">
-            <p className="text-sm font-black uppercase tracking-[0.35em] text-cyan-200">Care Guides</p>
-            <h2 className="mt-3 text-4xl font-black text-white sm:text-6xl">Built for the moments when something goes wrong.</h2>
-            <p className="mt-5 max-w-3xl text-lg text-slate-300">
-              Cycling crashes, planaria in shrimp tanks, axolotl temperature stress,
-              algae outbreaks, bacterial blooms — Oddwater is designed to help keepers
-              understand what is happening and what to do next.
-            </p>
-          </div>
+        <h2 className="mb-8 text-center text-4xl font-black text-white sm:text-6xl">
+          Care guides coming into focus.
+        </h2>
 
-          <div className="grid gap-5 md:grid-cols-2">
-            {guideCards.map((guide) => (
-              <div key={guide.title} className="rounded-3xl border border-cyan-300/10 bg-black/30 p-7">
-                <guide.icon className="h-10 w-10 text-cyan-300" />
-                <h3 className="mt-5 text-2xl font-black text-cyan-100">{guide.title}</h3>
-                <p className="mt-3 leading-7 text-slate-300">{guide.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function CyclingSection() {
-  return (
-    <section className="relative px-5 py-24">
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2">
-        <div className="glass-card rounded-[2rem] p-8">
-          <FlaskConical className="h-12 w-12 text-cyan-300" />
-          <h2 className="mt-5 text-4xl font-black text-white">Tank Cycling Wizard</h2>
-          <p className="mt-4 text-lg leading-8 text-slate-300">
-            Guided cycling help for freshwater tanks, shrimp tanks, planted tanks,
-            axolotl habitats, and oddball setups. Track ammonia, nitrite, nitrate,
-            pH, temperature, and cycle progress.
-          </p>
-          <div className="mt-6 space-y-3 text-cyan-100">
-            <p>✓ Fishless cycling walkthroughs</p>
-            <p>✓ “Is my tank ready?” checks</p>
-            <p>✓ Beginner-friendly nitrogen cycle explanations</p>
-            <p>✓ Bacterial bloom help</p>
-          </div>
-        </div>
-
-        <div className="glass-card rounded-[2rem] p-8">
-          <Bug className="h-12 w-12 text-cyan-300" />
-          <h2 className="mt-5 text-4xl font-black text-white">Pest & Planaria Help</h2>
-          <p className="mt-4 text-lg leading-8 text-slate-300">
-            Aquarium pest guides for shrimp-safe decision making, especially planaria,
-            hydra, detritus worms, leeches, algae, and treatment safety.
-          </p>
-          <div className="mt-6 space-y-3 text-cyan-100">
-            <p>✓ Planaria ID support</p>
-            <p>✓ Shrimp-safe treatment warnings</p>
-            <p>✓ Snail safety notes</p>
-            <p>✓ Feeding and cleanup prevention tips</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function CreatureSection() {
-  return (
-    <section id="creatures" className="relative px-5 py-24">
-      <div className="mx-auto max-w-7xl text-center">
-        <p className="text-sm font-black uppercase tracking-[0.35em] text-cyan-200">Creature-Focused</p>
-        <h2 className="mt-3 text-4xl font-black text-white sm:text-6xl">More than a fish tracker.</h2>
-        <p className="mx-auto mt-5 max-w-3xl text-lg text-slate-300">
-          Oddwater is designed for real aquatic hobbyists with real setups — from
-          planted shrimp tanks to axolotl habitats and hidden eel tunnel systems.
-        </p>
-
-        <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-          {creatures.map((creature, index) => {
-            const icons = [Egg, Fish, Droplets, ShieldCheck, Leaf, Waves];
-            const Icon = icons[index];
-            return (
-              <div key={creature} className="glass-card rounded-3xl p-5">
-                <Icon className="mx-auto h-9 w-9 text-cyan-300" />
-                <p className="mt-4 font-black text-cyan-100">{creature}</p>
-              </div>
-            );
-          })}
+        <div className="grid gap-5 md:grid-cols-3">
+          {items.map(([title, text, Icon]) => (
+            <Card key={title}>
+              <Icon className="h-10 w-10 text-cyan-300" />
+              <h3 className="mt-4 text-2xl font-black text-cyan-100">{title}</h3>
+              <p className="mt-3 text-slate-300">{text}</p>
+            </Card>
+          ))}
         </div>
       </div>
     </section>
@@ -388,57 +378,37 @@ function CreatureSection() {
 
 function Beta() {
   return (
-    <section id="beta" className="relative px-5 py-24">
-      <div className="mx-auto max-w-5xl rounded-[2.5rem] border border-cyan-300/15 bg-[radial-gradient(circle_at_top,rgba(34,211,238,.16),rgba(2,8,23,.8)_45%)] p-8 text-center shadow-[0_0_70px_rgba(34,211,238,.16)] sm:p-14">
-        <Mail className="mx-auto h-12 w-12 text-cyan-300" />
-        <h2 className="mt-5 text-4xl font-black text-white sm:text-6xl">Join the Oddwater beta</h2>
-        <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-300">
-          Early testers will help shape calculators, cycling guides, pest guides,
-          axolotl tracking, aquascape tools, and the first mobile app experience.
+    <section id="beta" className="px-5 py-24">
+      <div className="mx-auto max-w-4xl rounded-[2.5rem] border border-cyan-300/15 bg-cyan-300/5 p-10 text-center shadow-aqua">
+        <h2 className="text-4xl font-black text-white sm:text-6xl">Join the Oddwater beta</h2>
+        <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-300">
+          The app beta will support saved tanks, water logs, health scoring, and future reminders.
         </p>
-
-        <form className="mx-auto mt-8 flex max-w-2xl flex-col gap-3 sm:flex-row" onSubmit={(event) => event.preventDefault()}>
-          <input type="email" placeholder="Your email address" className="min-h-14 flex-1 rounded-2xl border border-cyan-300/20 bg-black/35 px-5 text-white outline-none placeholder:text-slate-500 focus:border-cyan-300" />
-          <button className="min-h-14 rounded-2xl bg-cyan-300 px-7 font-black text-slate-950 shadow-[0_0_30px_rgba(34,211,238,.55)] hover:bg-cyan-200">
-            Get Early Access
-          </button>
-        </form>
-
-        <p className="mt-4 text-sm text-slate-400">
-          Signup is a visual placeholder for now. Connect this later to Formspree,
-          ConvertKit, Mailchimp, Firebase, Supabase, or a Vercel function.
-        </p>
+        <input
+          placeholder="Email address"
+          className="mt-8 w-full max-w-md rounded-2xl border border-cyan-300/20 bg-black/35 px-5 py-4 text-white outline-none"
+        />
+        <p className="mt-3 text-sm text-slate-400">Signup form is visual for now.</p>
       </div>
     </section>
   );
 }
 
-function Footer() {
-  return (
-    <footer className="border-t border-cyan-300/10 px-5 py-10 text-center text-sm text-slate-400">
-      <div className="mx-auto max-w-7xl">
-        <p className="font-semibold text-cyan-100">Oddwater</p>
-        <p className="mt-2">
-          Designed for aquariums, axolotls, eels, shrimp, planted tanks, oddballs,
-          cycling guides, pest guides, and aquatic care tools.
-        </p>
-      </div>
-    </footer>
-  );
-}
-
 function App() {
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-[#020817] pt-28 text-white">
+    <main className="min-h-screen overflow-x-hidden bg-[#020817] text-white">
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top,#07598566,transparent_34%),linear-gradient(180deg,transparent,#020817)]" />
-      <Header />
-      <Hero />
-      <CalculatorHub />
-      <Guides />
-      <CyclingSection />
-      <CreatureSection />
-      <Beta />
-      <Footer />
+      <div className="relative z-10">
+        <Header />
+        <Hero />
+        <CalculatorHub />
+        <Guides />
+        <Beta />
+        <footer className="border-t border-cyan-300/10 px-5 py-10 text-center text-sm text-slate-400">
+          <p className="font-bold text-cyan-100">Oddwater Aquatics</p>
+          <p className="mt-2">Aquarium tools, care guides, and oddball aquatic planning.</p>
+        </footer>
+      </div>
     </main>
   );
 }
